@@ -1,9 +1,10 @@
 {
   "name": "superjson-bundle",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "dist/superjson.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\""
   },
   "keywords": [
     "superjson",
