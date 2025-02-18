@@ -19,7 +19,7 @@ const format = (scriptText) =>
   };
   let file = await fs.readFile("./dist/superjson.js", "utf8");
   if (!file.includes("$defineProperty")) {
-    const inject = `
+    const inject = `(()=>{
   const $defineProperty = Symbol('*defineProperty');
   Object[$defineProperty] = Object.defineProperty;
   Object.defineProperty = function defineProperty(obj,prop,desc){
@@ -37,6 +37,7 @@ const format = (scriptText) =>
   ${pretty(file)};/**/;
   Object.defineProperty = Object[$defineProperty];
   delete Object[$defineProperty];
+  })();
   `;
     await fs.writeFile("./dist/superjson.js", inject, "utf8");
   }

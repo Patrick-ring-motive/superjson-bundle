@@ -1,4 +1,4 @@
-
+(()=>{
   const $defineProperty = Symbol('*defineProperty');
   Object[$defineProperty] = Object.defineProperty;
   Object.defineProperty = function defineProperty(obj,prop,desc){
@@ -1654,7 +1654,7 @@
       })(...args),
     }, 'Arguments');
 
-
+    globalThis.superjson = superjson__WEBPACK_IMPORTED_MODULE_0__["default"];
   })();
 
   /******/
@@ -1662,4 +1662,5 @@
 //# sourceMappingURL=superjson.js.map;/**/;
   Object.defineProperty = Object[$defineProperty];
   delete Object[$defineProperty];
+  })();
   

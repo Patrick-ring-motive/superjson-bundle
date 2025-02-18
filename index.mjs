@@ -98,3 +98,4 @@ superjson.registerCustom({
   deserialize: args => (function (){return arguments;})(...args),
 }, 'Arguments');
 
+globalThis.superjson = superjson;
