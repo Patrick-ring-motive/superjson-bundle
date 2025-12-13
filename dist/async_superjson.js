@@ -522,7 +522,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(payload,Headers) || payload?.constructor?.name == 'Headers';
+      return instanceOf(x,Headers) || x?.constructor?.name == 'Headers';
     },
     serialize: async (headers) => {
       [headers] = await Promise.all([headers]);
@@ -537,7 +537,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(payload,URLSearchParams) || payload?.constructor?.name == 'URLSearchParams';
+      return instanceOf(x,URLSearchParams) || x?.constructor?.name == 'URLSearchParams';
     },
     serialize: async (params) => {
       [params] = await Promise.all([params]);
@@ -552,7 +552,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(payload,URL) || payload?.constructor?.name == 'URL';
+      return instanceOf(x,URL) || x?.constructor?.name == 'URL';
     },
     serialize: async (url) => {
       [url] = await Promise.all([url]);
@@ -567,7 +567,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(payload,FormData) || payload?.constructor?.name == 'FormData';
+      return instanceOf(x,FormData) || x?.constructor?.name == 'FormData';
     },
     serialize: async (fd) => {
       [fd] = await Promise.all([fd]);
@@ -586,7 +586,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(payload,ArrayBuffer) || payload?.constructor?.name == 'ArrayBuffer';
+      return instanceOf(x,ArrayBuffer) || x?.constructor?.name == 'ArrayBuffer';
     },
     serialize: async (ab) => {
       [ab] = await Promise.all([ab]);
@@ -597,7 +597,170 @@
       return new Uint8Array(JSON.parse(ab)).buffer;
     }
   }, 'ArrayBuffer');
+  await SuperJSON.registerCustom({
+    isApplicable: async (x) => {
+      [x] = await Promise.all([x]);
+      return instanceOf(x,Blob) || x?.constructor?.name == 'Blob';
+    },
+    serialize: async (blob) => {
+      [blob] = await Promise.all([blob]);
+      const sliced = blob.slice();
+      const arrayBuffer = await sliced.arrayBuffer();
+      return {
+        data: JSON.stringify([...new Uint8Array(arrayBuffer)]),
+        type: blob.type
+      };
+    },
+    deserialize: async (obj) => {
+      [obj] = await Promise.all([obj]);
+      const uint8Array = new Uint8Array(JSON.parse(obj.data));
+      return new Blob([uint8Array], { type: obj.type });
+    }
+  }, 'Blob');
 
+  await SuperJSON.registerCustom({
+    isApplicable: async (x) => {
+      [x] = await Promise.all([x]);
+      return x instanceof File;
+    },
+    serialize: async (file) => {
+      [file] = await Promise.all([file]);
+      const sliced = file.slice();
+      const arrayBuffer = await sliced.arrayBuffer();
+      return {
+        data: JSON.stringify([...new Uint8Array(arrayBuffer)]),
+        name: file.name,
+        type: file.type,
+        lastModified: file.lastModified
+      };
+    },
+    deserialize: async (obj) => {
+      [obj] = await Promise.all([obj]);
+      const uint8Array = new Uint8Array(JSON.parse(obj.data));
+      return new File([uint8Array], obj.name, {
+        type: obj.type,
+        lastModified: obj.lastModified
+      });
+    }
+  }, 'File');
+
+  await SuperJSON.registerCustom({
+    isApplicable: async (x) => {
+      [x] = await Promise.all([x]);
+      return x instanceof Request;
+    },
+    serialize: async (request) => {
+      [request] = await Promise.all([request]);
+      const cloned = request.clone();
+      const headers = {};
+      cloned.headers.forEach((value, key) => {
+        headers[key] = value;
+      });
+      
+      let body = null;
+      if (cloned.body) {
+        const arrayBuffer = await cloned.arrayBuffer();
+        body = JSON.stringify([...new Uint8Array(arrayBuffer)]);
+      }
+      
+      return {
+        url: cloned.url,
+        method: cloned.method,
+        headers: headers,
+        body: body,
+        mode: cloned.mode,
+        credentials: cloned.credentials,
+        cache: cloned.cache,
+        redirect: cloned.redirect,
+        referrer: cloned.referrer,
+        integrity: cloned.integrity
+      };
+    },
+    deserialize: async (obj) => {
+      [obj] = await Promise.all([obj]);
+      let body = null;
+      if (obj.body) {
+        const uint8Array = new Uint8Array(JSON.parse(obj.body));
+        body = uint8Array;
+      }
+      
+      return new Request(obj.url, {
+        method: obj.method,
+        headers: obj.headers,
+        body: body,
+        mode: obj.mode,
+        credentials: obj.credentials,
+        cache: obj.cache,
+        redirect: obj.redirect,
+        referrer: obj.referrer,
+        integrity: obj.integrity
+      });
+    }
+  }, 'Request');
+
+  await SuperJSON.registerCustom({
+    isApplicable: async (x) => {
+      [x] = await Promise.all([x]);
+      return x instanceof Response;
+    },
+    serialize: async (response) => {
+      [response] = await Promise.all([response]);
+      const cloned = response.clone();
+      const headers = {};
+      cloned.headers.forEach((value, key) => {
+        headers[key] = value;
+      });
+      
+      let body = null;
+      if (cloned.body) {
+        const arrayBuffer = await cloned.arrayBuffer();
+        body = JSON.stringify([...new Uint8Array(arrayBuffer)]);
+      }
+      
+      return {
+        body: body,
+        status: cloned.status,
+        statusText: cloned.statusText,
+        headers: headers,
+        url: cloned.url,
+        redirected: cloned.redirected,
+        type: cloned.type
+      };
+    },
+    deserialize: async (obj) => {
+      [obj] = await Promise.all([obj]);
+      let body = null;
+      if (obj.body) {
+        const uint8Array = new Uint8Array(JSON.parse(obj.body));
+        body = uint8Array;
+      }
+      
+      return new Response(body, {
+        status: obj.status,
+        statusText: obj.statusText,
+        headers: obj.headers
+      });
+    }
+  }, 'Response');
+
+  await SuperJSON.registerCustom({
+    isApplicable: async (x) => {
+      [x] = await Promise.all([x]);
+      return x instanceof ReadableStream;
+    },
+    serialize: async (stream) => {
+      [stream] = await Promise.all([stream]);
+      const response = new Response(stream);
+      const arrayBuffer = await response.arrayBuffer();
+      return JSON.stringify([...new Uint8Array(arrayBuffer)]);
+    },
+    deserialize: async (data) => {
+      [data] = await Promise.all([data]);
+      const uint8Array = new Uint8Array(JSON.parse(data));
+      const response = new Response(uint8Array);
+      return response.body;
+    }
+  }, 'ReadableStream');
   globalThis.superjson = SuperJSON;
   
   Object.defineProperty = Object[$defineProperty];
