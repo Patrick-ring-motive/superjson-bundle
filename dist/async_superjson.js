@@ -495,12 +495,12 @@
   
   const isSet = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return payload instanceof Set;
+    return instanceOf(payload,Set) || payload?.constructor?.name == 'Set';
   };
   
   const isBigint = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return typeof payload === 'bigint';
+    return typeof payload === 'bigint' || instanceOf(payload,BigInt) || payload?.constructor?.name == 'BigInt';
   };
   
   const isNaNValue = async (payload) => {
@@ -515,14 +515,14 @@
   
   const isError = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return payload instanceof Error;
+    return instanceOf(payload,Error) || payload?.constructor?.name == 'Error';
   };
 
   // Register custom types for web APIs
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return x instanceof Headers;
+      return instanceOf(payload,Headers) || payload?.constructor?.name == 'Headers';
     },
     serialize: async (headers) => {
       [headers] = await Promise.all([headers]);
@@ -537,7 +537,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return x instanceof URLSearchParams;
+      return instanceOf(payload,URLSearchParams) || payload?.constructor?.name == 'URLSearchParams';
     },
     serialize: async (params) => {
       [params] = await Promise.all([params]);
@@ -552,7 +552,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return x instanceof URL;
+      return instanceOf(payload,URL) || payload?.constructor?.name == 'URL';
     },
     serialize: async (url) => {
       [url] = await Promise.all([url]);
@@ -567,7 +567,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return x instanceof FormData;
+      return instanceOf(payload,FormData) || payload?.constructor?.name == 'FormData';
     },
     serialize: async (fd) => {
       [fd] = await Promise.all([fd]);
@@ -586,7 +586,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return x instanceof ArrayBuffer;
+      return instanceOf(payload,ArrayBuffer) || payload?.constructor?.name == 'ArrayBuffer';
     },
     serialize: async (ab) => {
       [ab] = await Promise.all([ab]);
