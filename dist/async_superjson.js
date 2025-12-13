@@ -621,7 +621,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return x instanceof File;
+      return instanceOf(x,File) || x?.constructor?.name == 'File';
     },
     serialize: async (file) => {
       [file] = await Promise.all([file]);
@@ -647,7 +647,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return x instanceof Request;
+      return instanceOf(x,Request) || x?.constructor?.name == 'Request';
     },
     serialize: async (request) => {
       [request] = await Promise.all([request]);
@@ -701,7 +701,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return x instanceof Response;
+      return instanceOf(x,Response) || x?.constructor?.name == 'Response';
     },
     serialize: async (response) => {
       [response] = await Promise.all([response]);
@@ -746,7 +746,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return x instanceof ReadableStream;
+      return instanceOf(x,ReadableStream) || x?.constructor?.name == 'ReadableStream';
     },
     serialize: async (stream) => {
       [stream] = await Promise.all([stream]);
