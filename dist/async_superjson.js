@@ -450,7 +450,7 @@
   // More type checking helpers
   const isBoolean = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return typeof payload === 'boolean';
+    return typeof payload === 'boolean' || instanceOf(payload,Boolean) || payload?.constructor?.name == 'Boolean';
   };
   
   const isNull = async (payload) => {
@@ -465,32 +465,32 @@
   
   const isNumber = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return typeof payload === 'number' && !isNaN(payload);
+    return (typeof payload === 'number' || instanceOf(payload,Number) || payload?.constructor?.name == 'Number') && !isNaN(payload);
   };
   
   const isString = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return typeof payload === 'string';
+    return typeof payload === 'string' || instanceOf(payload,String) || payload?.constructor?.name == 'String';
   };
   
   const isSymbol = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return typeof payload === 'symbol';
+    return typeof payload === 'symbol' || instanceOf(payload,Symbol) || payload?.constructor?.name == 'Symbol'; 
   };
   
   const isDate = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return payload instanceof Date && !isNaN(payload.valueOf());
+    return (instanceOf(payload,Date) || payload?.constructor?.name == 'Date') && !isNaN(payload?.valueOf?.());
   };
   
   const isRegExp = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return payload instanceof RegExp;
+    return instanceOf(payload,RegExp) || payload?.constructor?.name == 'RegExp';
   };
   
   const isMap = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return payload instanceof Map;
+    return instanceOf(payload,Map) || payload?.constructor?.name == 'Map';
   };
   
   const isSet = async (payload) => {
