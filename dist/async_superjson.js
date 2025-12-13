@@ -25,10 +25,18 @@
     [payload] = await Promise.all([payload]);
     return Object.prototype.toString.call(payload).slice(8, -1);
   };
+
+  const instanceOf = (x,y) =>{
+    try{
+      return x instanceof y;
+    }catch(_){
+      return false;
+    }
+  };
   
   const isArray = async (payload) => {
     [payload] = await Promise.all([payload]);
-    return Array.isArray(payload);
+    return Array.isArray(payload) || instanceOf(payload,Array) || payload?.constructor?.name == 'Array';
   };
   
   const isPlainObject = async (payload) => {
