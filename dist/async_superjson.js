@@ -402,23 +402,26 @@
     return rootEqualityPaths ? [rootEqualityPaths, result] : result;
   };
 
-  const applyValueAnnotations = async (plain, annotations, superJson) => {
-    [plain, annotations, superJson] = await Promise.all([plain, annotations, superJson]);
-    
-    for (const [path, type] of Object.entries(annotations)) {
-      const pathArray = path.split('.');
-      let current = plain;
-      
-      for (let i = 0; i < pathArray.length - 1; i++) {
-        current = current[pathArray[i]];
-      }
-      
-      const lastKey = pathArray[pathArray.length - 1];
-      current[lastKey] = await untransformValue(current[lastKey], type, superJson);
+ const applyValueAnnotations = async (plain, annotations, superJson) => {
+  [plain, annotations, superJson] = await Promise.all([plain, annotations, superJson]);
+
+  // Root-level annotation — annotations is an array like [['custom', 'Response']]
+  if (await isArray(annotations)) {
+    return await untransformValue(plain, annotations, superJson);
+  }
+
+  for (const [path, type] of Object.entries(annotations)) {
+    const pathArray = path.split('.');
+    let current = plain;
+    for (let i = 0; i < pathArray.length - 1; i++) {
+      current = current[pathArray[i]];
     }
-    
-    return plain;
-  };
+    const lastKey = pathArray[pathArray.length - 1];
+    current[lastKey] = await untransformValue(current[lastKey], type, superJson);
+  }
+
+  return plain;
+};
 
   const applyReferentialEqualityAnnotations = async (plain, annotations) => {
     [plain, annotations] = await Promise.all([plain, annotations]);
