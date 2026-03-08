@@ -730,7 +730,7 @@
     deserialize: async (obj) => {
       [obj] = await Promise.all([obj]);
       let body = null;
-      if (obj.body) {
+      if (obj?.body) {
         const uint8Array = new Uint8Array(JSON.parse(obj.body));
         body = uint8Array;
       }
