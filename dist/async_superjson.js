@@ -287,6 +287,7 @@
       const [typeName, typeArg] = type;
       if (typeName === 'custom') {
         const transformer = superJson.customTransformerRegistry.get(typeArg);
+        console.log('custom type:', typeArg, 'transformer:', transformer, 'json:', json);
         if (!transformer) {
           throw new Error('Trying to deserialize unknown custom value');
         }
