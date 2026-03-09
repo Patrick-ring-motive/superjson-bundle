@@ -33,6 +33,14 @@
       return false;
     }
   };
+
+  const instanceOfUnwrap = (x,y) =>{
+    try{
+      return x instanceof y();
+    }catch(_){
+      return false;
+    }
+  };
   
   const isArray = async (payload) => {
     [payload] = await Promise.all([payload]);
@@ -528,7 +536,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(x,Headers) || x?.constructor?.name == 'Headers';
+      return instanceOfUnwrap(x,()=>Headers) || x?.constructor?.name == 'Headers';
     },
     serialize: async (headers) => {
       [headers] = await Promise.all([headers]);
@@ -543,7 +551,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(x,URLSearchParams) || x?.constructor?.name == 'URLSearchParams';
+      return instanceOfUnwrap(x,()=>URLSearchParams) || x?.constructor?.name == 'URLSearchParams';
     },
     serialize: async (params) => {
       [params] = await Promise.all([params]);
@@ -558,7 +566,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(x,URL) || x?.constructor?.name == 'URL';
+      return instanceOfUnwrap(x,()=>URL) || x?.constructor?.name == 'URL';
     },
     serialize: async (url) => {
       [url] = await Promise.all([url]);
@@ -573,7 +581,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(x,FormData) || x?.constructor?.name == 'FormData';
+      return instanceOfUnwrap(x,()=>FormData) || x?.constructor?.name == 'FormData';
     },
     serialize: async (fd) => {
       [fd] = await Promise.all([fd]);
@@ -592,7 +600,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(x,ArrayBuffer) || x?.constructor?.name == 'ArrayBuffer';
+      return instanceOfUnwrap(x,()=>ArrayBuffer) || x?.constructor?.name == 'ArrayBuffer';
     },
     serialize: async (ab) => {
       [ab] = await Promise.all([ab]);
@@ -606,7 +614,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(x,Blob) || x?.constructor?.name == 'Blob';
+      return instanceOfUnwrap(x,()=>Blob) || x?.constructor?.name == 'Blob';
     },
     serialize: async (blob) => {
       [blob] = await Promise.all([blob]);
@@ -627,7 +635,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(x,File) || x?.constructor?.name == 'File';
+      return instanceOfUnwrap(x,()=>File) || x?.constructor?.name == 'File';
     },
     serialize: async (file) => {
       [file] = await Promise.all([file]);
@@ -653,7 +661,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(x,Request) || x?.constructor?.name == 'Request';
+      return instanceOfUnwrap(x,()=>Request) || x?.constructor?.name == 'Request';
     },
     serialize: async (request) => {
       [request] = await Promise.all([request]);
@@ -707,7 +715,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(x,Response) || x?.constructor?.name == 'Response';
+      return instanceOfUnwrap(x,()=>Response) || x?.constructor?.name == 'Response';
     },
     serialize: async (response) => {
       [response] = await Promise.all([response]);
@@ -752,7 +760,7 @@
   await SuperJSON.registerCustom({
     isApplicable: async (x) => {
       [x] = await Promise.all([x]);
-      return instanceOf(x,ReadableStream) || x?.constructor?.name == 'ReadableStream';
+      return instanceOfUnwrap(x,()=>ReadableStream) || x?.constructor?.name == 'ReadableStream';
     },
     serialize: async (stream) => {
       [stream] = await Promise.all([stream]);
