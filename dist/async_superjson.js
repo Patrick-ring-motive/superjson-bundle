@@ -282,8 +282,10 @@
 
   const untransformValue = async (json, type, superJson) => {
     [json, type, superJson] = await Promise.all([json, type, superJson]);
-    
     if (await isArray(type)) {
+      if(await isArray(type[0])){
+        type = type[0];
+      }
       const [typeName, typeArg] = type;
       if (typeName === 'custom') {
         const transformer = superJson.customTransformerRegistry.get(typeArg);
