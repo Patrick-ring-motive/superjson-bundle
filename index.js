@@ -2,20 +2,23 @@ const beautify = require("js-beautify/js").js,
   fs = require("fs/promises");
 const format = (scriptText) =>
   scriptText
-    .replace(
-      /([$a-zA-Z_]+[$a-zA-Z0-9_]*)\s*=\s*function\s*\(/g,
-      "$1 = function $1(",
-    )
-    .replace(
-      /([$a-zA-Z_]+[$a-zA-Z0-9_]*)\s*:\s*function\s*\(/g,
-      "$1 : function $1(",
-    );
+  .replace(
+    /([$a-zA-Z_]+[$a-zA-Z0-9_]*)\s*=\s*function\s*\(/g,
+    "$1 = function $1(",
+  )
+  .replace(
+    /([$a-zA-Z_]+[$a-zA-Z0-9_]*)\s*:\s*function\s*\(/g,
+    "$1 : function $1(",
+  );
 
 (async () => {
   await import("./index.mjs");
 
   const pretty = function pretty(txt) {
-    return beautify(txt, { indent_size: 2, space_in_empty_paren: true });
+    return beautify(txt, {
+      indent_size: 2,
+      space_in_empty_paren: true
+    });
   };
   let file = await fs.readFile("./dist/superjson.js", "utf8");
   if (!file.includes("$defineProperty")) {
