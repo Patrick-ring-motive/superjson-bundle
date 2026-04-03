@@ -1,4 +1,3 @@
-
 import superjson from 'superjson';
 
 const instanceOf = (x, y) => {
@@ -24,7 +23,6 @@ const isFormData = x => constructOf(x, FormData);
 const isArrayBuffer = x => constructOf(x, ArrayBuffer);
 
 const jcopy = x => JSON.parse(JSON.stringify(x));
-
 
 superjson.registerCustom({
   isApplicable: isHeaders,
@@ -55,7 +53,7 @@ superjson.registerCustom({
     const url = new URL(obj.href);
     try {
       url.searchParams = superjson.deserialize(obj.searchParams);
-    } catch { }
+    } catch {}
     return url;
   }
 }, 'URL');
@@ -79,23 +77,25 @@ superjson.registerCustom({
 }, 'ArrayBuffer');
 
 superjson.registerCustom({
-  isApplicable: x => constructOf(x,DataView),
-  serialize: dv =>({
-    buffer:[...new Uint8Array(dv.buffer)],
-    offset:dv.byteOffset,
-    length:dv.byteLength
+  isApplicable: x => constructOf(x, DataView),
+  serialize: dv => ({
+    buffer: [...new Uint8Array(dv.buffer)],
+    offset: dv.byteOffset,
+    length: dv.byteLength
   }),
   deserialize: dv => new DataView(
     new Uint8Array(dv.buffer).buffer,
-    dv.offset, 
+    dv.offset,
     dv.length
   )
 }, 'DataView');
 
 superjson.registerCustom({
-  isApplicable: x => String(x)==='[object Arguments]',
+  isApplicable: x => String(x) === '[object Arguments]',
   serialize: args => [...args],
-  deserialize: args => (function (){return arguments;})(...args),
+  deserialize: args => (function() {
+    return arguments;
+  })(...args),
 }, 'Arguments');
 
 globalThis.superjson = superjson;
